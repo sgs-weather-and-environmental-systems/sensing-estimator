@@ -1,0 +1,1221 @@
+<!doctype html>
+<!--
+%COPYRIGHTNOTICE%
+
+Redistribution and use in source and binary forms, with or without
+modification, are permitted provided that the following conditions
+are met:
+
+*   Redistributions of source code must retain the above copyright
+notice, this list of conditions and the following disclaimer.
+notice, this list of conditions and the following disclaimer in the
+documentation and/or other materials provided with the distribution.
+*   Neither the name of Texas Instruments Incorporated nor the names of
+its contributors may be used to endorse or promote products derived
+from this software without specific prior written permission.
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS \"AS IS\"
+AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER OR
+CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+-->
+<html>
+<head>
+    <meta content="text/html;charset=utf-8" http-equiv="Content-Type">
+    <title>mmWaveSensingEstimator</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+    <meta name="mobile-web-app-capable" content="yes">
+    <script src="components/webcomponentsjs/webcomponents-lite.js"></script>
+    <script src="app/input.js"></script>
+    <script src="app/mmWaveEstimator.js"></script>
+    <link rel="stylesheet" href="app/mystyle.css">
+    <script src="app/myutil.js"></script>
+    <link rel="import" href="components/ti-core-databind/ti-core-databind.html">
+
+    <style>
+        body,
+        html {
+            margin: 0;
+            height: 100%;
+            overflow-y: hidden;
+        }
+
+        design-gist-element-preview {
+            position: absolute;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            left: 0;
+        }
+    </style>
+</head>
+<body class="ti-theme">
+<div id="splash" style='width:100%; height:100%; z-index: 999999; background-color: #eeeeee; position: absolute;'>
+	<div style="width: 100%; height: 100%; background: url('./images/loading.gif') no-repeat center"></div>
+</div>
+
+<!-- ------------------------------------------------------------------------------------- -->
+<link rel="import" href="components/ti-widget-readme/ti-widget-readme.html">
+<link rel="import" href="components/ti-core-stylesheets/ti-core-stylesheets.html">
+<link rel="import" href="components/ti-widget-menubar/ti-widget-menubar.html">
+<link rel="import" href="components/ti-widget-menubar/ti-widget-filemenu.html">
+<link rel="import" href="components/ti-widget-menubar/ti-widget-helpmenu.html">
+<link rel="import" href="components/ti-widget-menubar/ti-widget-menuaction.html">
+<link rel="import" href="components/ti-widget-common/ti-widget-container.html">
+<link rel="import" href="components/ti-widget-common/ti-widget-label.html">
+<link rel="import" href="components/ti-widget-common/ti-widget-droplist.html">
+<link rel="import" href="components/ti-widget-common/ti-widget-textbox.html">
+<link rel="import" href="components/ti-widget-common/ti-widget-button.html">
+<link rel="import" href="components/ti-widget-common/ti-widget-image.html">
+<link rel="import" href="components/ti-widget-statusbar/ti-widget-statusbar.html">
+
+ 
+  <template id="template_obj" is="dom-bind">
+
+<style is="custom-style">
+  #ti_widget_menubar {
+    top: 0px;
+    width: 100%;
+    margin: 0px;
+    position: absolute;
+  }
+  html .viewport {
+    position: absolute;
+    left: 0px;
+    right: 0px;
+    bottom: 28px;
+    top: 41px;
+    border: medium none;
+  }
+  #viewport {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+    overflow: auto;
+  }
+  #ti_widget_statusbar {
+    position: static;
+  }
+  #ti_widget_container_input {
+    height: 899px;
+    width: 440px;
+    border: 1px solid black;
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+    left: 0px;
+    top: 0px;
+    position: absolute;
+  }
+  #ti_widget_container_output {
+    height: 730px;
+    width: 840px;
+    border: 1px solid black;
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+    left: 460px;
+    top: 0px;
+    position: absolute;
+  }
+  #ti_widget_textbox_cfg_console {
+    font-size: inherit;
+    font-family: monospace, sans-serif;
+    left: 460px;
+    top: 738px;
+    position: absolute;
+    overflow: auto;
+    width: 840px;
+    height: 160px;
+    resize: vertical;
+  }
+  #ti_widget_container_input_device {
+    top: 30px;
+  }
+  #ti_widget_container_input_board {
+    top: 167px;
+  }
+  #ti_widget_container_input_regulatory {
+    top: 273px;
+  }
+  #ti_widget_container_input_scene {
+    top: 410px;
+  }
+  #ti_widget_container_input_additional {
+    top: 675px;
+  }
+  #ti_widget_container_output_det_obj {
+    top: 30px;
+    height: 64px;
+  }
+  #ti_widget_container_output_chirp_design {
+    top: 320px;
+    height: 196px;
+    left: 10px;
+  }
+  #ti_widget_textbox_typical_detected_object {
+    font-size: inherit;
+    left: 353px;
+    width: 50px;
+    display: block;
+    position: absolute;
+  }
+  #ti_widget_droplist_typical_detected_object {
+    font-size: inherit;
+    width: 95px;
+    display: block;
+    position: absolute;
+    left: 253px;
+  }
+  #ti_widget_label_input {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+    white-space: nowrap;
+  }
+  #ti_widget_filemenu {
+    display: none;
+  }
+  #ti_widget_button_save_config {
+    position: absolute;
+    top: 843px;
+    left: 10px;
+  }
+  #ti_widget_button_load_cfg {
+    left: 160px;
+    top: 843px;
+    position: absolute;
+  }
+  #ti_widget_button_reset_cfg {
+    left: 310px;
+    top: 843px;
+    position: absolute;
+  }
+  #ti_widget_droplist_default_cfg {
+    width: 160px;
+    height: 20px;
+    font-size: inherit;
+    left: 265px;
+    top: 4px;
+    position: absolute;
+  }
+  #label_help_about {
+    display: block;
+    color: rgb(2, 104, 140) !important;
+  }
+  #ti_widget_label_sensor {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+    white-space: nowrap;
+  }
+  #ti_widget_label_input_device {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+    white-space: nowrap;
+  }
+  #ti_widget_container_sensor {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+  }
+  #ti_widget_droplist_sensor {
+    font-size: inherit;
+  }
+  #ti_widget_label_tx_gain {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+    white-space: nowrap;
+  }
+  #ti_widget_container_tx_gain {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+  }
+  #ti_widget_label_num_rx {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+    white-space: nowrap;
+  }
+  #ti_widget_droplist_num_rx {
+    font-size: inherit;
+  }
+  #ti_widget_label_num_tx {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+    white-space: nowrap;
+  }
+  #ti_widget_droplist_num_tx {
+    font-size: inherit;
+  }
+  #ti_widget_container_num_rx {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+  }
+  #ti_widget_label_input_board {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+    white-space: nowrap;
+  }
+  #ti_widget_textbox_tx_gain {
+    font-size: inherit;
+  }
+  #ti_widget_label_rx_gain {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+    white-space: nowrap;
+  }
+  #ti_widget_textbox_rx_gain {
+    font-size: inherit;
+  }
+  #ti_widget_label_frequency_range {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+    white-space: nowrap;
+  }
+  #ti_widget_droplist_frequency_range {
+    font-size: inherit;
+  }
+  #ti_widget_label_maximum_bandwidth {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+    white-space: nowrap;
+  }
+  #ti_widget_textbox_maximum_bandwidth {
+    font-size: inherit;
+  }
+  #ti_widget_label_tx_power {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+    white-space: nowrap;
+  }
+  #ti_widget_textbox_tx_power {
+    font-size: inherit;
+  }
+  #ti_widget_container_tx_power {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+  }
+  #ti_widget_container_num_tx {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+  }
+  #ti_widget_container_rx_gain {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+  }
+  #ti_widget_label_input_regulatory {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+    white-space: nowrap;
+  }
+  #ti_widget_container_frequency_range {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+  }
+  #ti_widget_container_maximum_bandwidth {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+  }
+  #ti_widget_label_ambient_temperature {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+    white-space: nowrap;
+  }
+  #ti_widget_container_ambient_temperature {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+  }
+  #ti_widget_textbox_ambient_temperature {
+    font-size: inherit;
+  }
+  #ti_widget_container_maximum_detectable_range {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+  }
+  #ti_widget_textbox_maximum_detectable_range {
+    font-size: inherit;
+  }
+  #ti_widget_container_range_resolution {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+  }
+  #ti_widget_textbox_range_resolution {
+    font-size: inherit;
+  }
+  #ti_widget_container_maximum_velocity {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+  }
+  #ti_widget_textbox_maximum_velocity {
+    font-size: inherit;
+  }
+  #ti_widget_container_velocity_resolution {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+  }
+  #ti_widget_textbox_velocity_resolution {
+    font-size: inherit;
+  }
+  #ti_widget_container_measurement_rate {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+  }
+  #ti_widget_textbox_measurement_rate {
+    font-size: inherit;
+  }
+  #ti_widget_container_typical_detected_object {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+  }
+  #ti_widget_label_detection_loss {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+    white-space: nowrap;
+  }
+  #ti_widget_container_detection_loss {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+  }
+  #ti_widget_textbox_detection_loss {
+    font-size: inherit;
+  }
+  #ti_widget_container_system_loss {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+  }
+  #ti_widget_textbox_system_loss {
+    font-size: inherit;
+  }
+  #ti_widget_container_implementation_margin {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+  }
+  #ti_widget_textbox_implementation_margin {
+    font-size: inherit;
+  }
+  #ti_widget_container_detection_SNR {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+  }
+  #ti_widget_textbox_detection_SNR {
+    font-size: inherit;
+  }
+  #ti_widget_container_max_range_for_det_obj {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+  }
+  #ti_widget_textbox_max_range_for_det_obj {
+    font-size: inherit;
+  }
+  #ti_widget_container_min_rcs_at_max_range {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+  }
+  #ti_widget_textbox_min_rcs_at_max_range {
+    font-size: inherit;
+  }
+  #ti_widget_container_chirp_time {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+  }
+  #ti_widget_textbox_chirp_time {
+    font-size: inherit;
+  }
+  #ti_widget_container_ramp_slope_parameter {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+  }
+  #ti_widget_textbox_ramp_slope_parameter {
+    font-size: inherit;
+  }
+  #ti_widget_container_ramp_slope {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+  }
+  #ti_widget_textbox_ramp_slope {
+    font-size: inherit;
+  }
+  #ti_widget_container_maximum_beat_frequency {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+  }
+  #ti_widget_container_sampling_frequency {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+  }
+  #ti_widget_textbox_sampling_frequency {
+    font-size: inherit;
+  }
+  #ti_widget_container_num_samples_per_chirp {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+  }
+  #ti_widget_textbox_num_samples_per_chirp {
+    font-size: inherit;
+  }
+  #ti_widget_container_total_sweep_bandwidth {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+  }
+  #ti_widget_textbox_total_sweep_bandwidth {
+    font-size: inherit;
+  }
+  #ti_widget_container_idle_time_minimum {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+  }
+  #ti_widget_textbox_idle_time_minimum {
+    font-size: inherit;
+  }
+  #ti_widget_container_ramp_end_time {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+  }
+  #ti_widget_textbox_ramp_end_time {
+    font-size: inherit;
+  }
+  #ti_widget_container_adc_valid_start_time {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+  }
+  #ti_widget_textbox_adc_valid_start_time {
+    font-size: inherit;
+  }
+  #ti_widget_container_chirp_repetition_period {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+  }
+  #ti_widget_textbox_chirp_repetition_period {
+    font-size: inherit;
+  }
+  #ti_widget_container_num_range_fft_bins {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+  }
+  #ti_widget_textbox_num_range_fft_bins {
+    font-size: inherit;
+  }
+  #ti_widget_container_min_num_chirp_loops {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+  }
+  #ti_widget_textbox_min_num_chirp_loops {
+    font-size: inherit;
+  }
+  #ti_widget_container_num_doppler_fft_bins {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+  }
+  #ti_widget_textbox_num_doppler_fft_bins {
+    font-size: inherit;
+  }
+  #ti_widget_container_active_frame_time {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+  }
+  #ti_widget_textbox_active_frame_time {
+    font-size: inherit;
+  }
+  #ti_widget_container_range_inter_bin_resolution {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+  }
+  #ti_widget_textbox_range_inter_bin_resolution {
+    font-size: inherit;
+  }
+  #ti_widget_container_velocity_inter_bin_resolution {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+  }
+  #ti_widget_textbox_velocity_inter_bin_resolution {
+    font-size: inherit;
+  }
+  #ti_widget_container_radar_cube_size {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+  }
+  #ti_widget_textbox_radar_cube_size {
+    font-size: inherit;
+  }
+  #ti_widget_label_num_samples_per_chirp {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+    white-space: nowrap;
+  }
+  #ti_widget_label_adc_valid_start_time {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+    white-space: nowrap;
+  }
+  #ti_widget_label_sampling_frequency {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+    white-space: nowrap;
+  }
+  #ti_widget_label_maximum_beat_frequency {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+    white-space: nowrap;
+  }
+  #ti_widget_label_ramp_slope_parameter {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+    white-space: nowrap;
+  }
+  #ti_widget_label_ramp_slope {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+    white-space: nowrap;
+  }
+  #ti_widget_label_idle_time_minimum {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+    white-space: nowrap;
+  }
+  #ti_widget_label_total_sweep_bandwidth {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+    white-space: nowrap;
+  }
+  #ti_widget_label_min_num_chirp_loops {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+    white-space: nowrap;
+  }
+  #ti_widget_label_output_chirp_design {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+    white-space: nowrap;
+  }
+  #ti_widget_label_output_det_obj {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+    white-space: nowrap;
+  }
+  #ti_widget_label1 {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+    white-space: nowrap;
+    left: 390px;
+    top: 250px;
+  }
+  #ti_widget_container1 {
+    top: 520px;
+    height: 196px;
+    left: 10px;
+    position: absolute;
+  }
+  #ti_widget_textbox_periodicity {
+    font-size: inherit;
+  }
+  #ti_widget_image {
+    left: 100px;
+    top: 100px;
+    position: absolute;
+    width: 650px;
+  }
+  #ti_widget_label_chirp_time {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+    white-space: nowrap;
+  }
+  #ti_widget_label_typical_detected_object {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+    white-space: nowrap;
+  }
+  #ti_widget_label_start_frequency {
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+    white-space: nowrap;
+  }
+</style>
+
+<ti-widget-readme 1 9 background-color="#ffffff" elevation="5" title-text='How to use "mmWave Sensing Estimator"' id="readmeViewer" s guide. ## known issues * some input combinations can generate a negative chirp time. this is an invalid configuration. release notes ### version 1.2 added diagram for easier visualization of the configuration parameters enabled inputs directly through url example: dev.ti.com mmwavesensingestimator?range="20&velocity=25" download link offline inside sensing estimator organized output view into front-end and information only renamed to match radar studio fixed bugs: uses incorrect i f bandwidth sample rate awr1443 inconsistent detectable range calculation in custom rcs 1.1 improved idle time adc valid start find optimum value parameters. significantly improves max velocity offer more bug active frame that was resulting too high check maximum measurement by checking against 100% duty cycle instead 50%. device capable cycle, but attention should be paid head dissipation design. memory validate production where firmware stored rom ram - increasing available 128kb. adjusted transmit receive antenna gain evm @ db. detection loss default 1.0 initial web-release mmwave implemented basic scene conversion based on equations out bounds capabilities' fix planned 1.3. readme-file-exists class="_TI_"></ti-widget-readme>
+
+<ti-widget-readme background-color="#ffffff" elevation="5" title-text="mmWave Sensing Estimator User Guide" id="userguideViewer" class="_TI_" markdown-file="app/userguide.md"></ti-widget-readme>
+<ti-core-stylesheets class="_TI_" id="ti_core_stylesheets"></ti-core-stylesheets>
+<style>
+  html .ti-theme {
+    font-family: Roboto, sans-serif;
+  }
+  html .ti-theme label, html .ti-theme input, html .ti-theme select, html .ti-theme ti-widget-label, html .ti-theme ti-widget-droplist, html .ti-theme ti-widget-textbox, html .ti-theme h1, html .ti-theme h3, html .ti-theme h5 {
+    font-family: Roboto, sans-serif !important;
+  }
+  #ti_widget_menubar {
+    background-color: rgb(204, 0, 0);
+  }
+  ti-widget-button {
+    background-color: rgb(17, 136, 153) !important;
+  }
+  .group0hdr {
+    left: 15px;
+    top: 4px;
+    position: absolute;
+    text-align: left;
+    text-decoration: none;
+    font-weight: bold;
+    font-style: normal;
+    font-size: large;
+    white-space: nowrap;
+    color: rgb(2, 104, 140) !important;
+  }
+  .group1 {
+    width: calc(100% - 22px);
+    border: 1px solid rgb(152, 153, 155);
+    overflow: auto;
+    left: 10px;
+    position: absolute;
+    display: table;
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+  }
+  .group1hdr {
+    padding: 5px 10px;
+    display: block;
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+    white-space: nowrap;
+    color: rgb(28, 153, 196) !important;
+  }
+  .group2 {
+    width: calc(100% - 22px);
+    border: 1px solid rgb(152, 153, 155);
+    left: 10px;
+    position: absolute;
+  }
+  .dummygroup1 {
+    position: absolute;
+    left: 0px;
+    width: 50%;
+    display: table;
+  }
+  .dummygroup2 {
+    position: absolute;
+    left: 50%;
+    width: 50%;
+    display: table;
+  }
+  .row1 {
+    height: 32px;
+    display: table-row;
+  }
+  .row1:nth-of-type(2n+1) {
+    background-image: none;
+    background-attachment: scroll;
+    background-color: rgb(247, 247, 247);
+    background-position: 0% 0%;
+    background-repeat: repeat;
+  }
+  .label1 {
+    vertical-align: middle;
+    padding-left: 10px;
+    display: table-cell;
+    text-align: left;
+    text-decoration: none;
+    font-weight: normal;
+    font-style: normal;
+    font-size: inherit;
+    white-space: nowrap;
+  }
+  .value1 {
+    right: 10px;
+    position: relative;
+    padding-top: 5px;
+    display: table-cell;
+    width: 150px;
+    font-size: inherit;
+  }
+  .value2 {
+    right: 10px;
+    position: relative;
+    padding-top: 5px;
+    display: table-cell;
+    width: 90px;
+    font-size: inherit;
+  }
+  .error1 label, .error1 input, .error1 select {
+    color: rgb(221, 0, 0) !important;
+  }
+  .error1 input, .error1 select {
+    border: 2px solid rgb(221, 0, 0) !important;
+  }
+  ti-widget-textbox input {
+    height: 23px;
+  }
+  .helplabel1 {
+    display: block;
+  }
+</style>
+
+<ti-widget-menubar product-name="mmWave Sensing Estimator" id="ti_widget_menubar" pin horizontal class="_TI_ x-scope ti-widget-menubar-0" layout>
+    <ti-widget-filemenu id="ti_widget_filemenu" class="_TI_" layout></ti-widget-filemenu>
+    <ti-widget-helpmenu id="ti_widget_helpmenu" class="_TI_ selected-element" layout>
+        <ti-widget-menuaction name="User's Guide" id="ti_widget_menuaction_userguide" icon-name="av:library-books" class="_TI_ subMenuItem"></ti-widget-menuaction>
+        <ti-widget-menuaction name="Download or Clone Sensing Estimator" icon-name="icons:get-app" id="ti_widget_menuaction_download" class="_TI_ subMenuItem"></ti-widget-menuaction>
+    </ti-widget-helpmenu>
+</ti-widget-menubar>
+
+<ti-widget-container font-size="inherit" auto-scroll font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible id="viewport" title class="_TI_ viewport">
+    <ti-widget-container font-size="inherit" auto-scroll font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible id="ti_widget_container_input" class="_TI_" title>
+        <ti-widget-label label="Assumptions and Inputs" text-align="left" font-size="large" font-style="normal" font-weight="normal" text-decoration="none" visible id="ti_widget_label_input" class="_TI_ group0hdr"></ti-widget-label>
+        <ti-widget-droplist selected-index="0" selected-value="default_1" selected-text="Short Range Default" values="default_1|default_2" labels="Short Range Default|Long Range Default" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" text-align="left" visible id="ti_widget_droplist_default_cfg" class="_TI_ x-scope ti-widget-droplist-0" onchange="onDefaultCfg()"></ti-widget-droplist>
+        <ti-widget-container font-size="inherit" font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible id="ti_widget_container_input_device" class="_TI_ group1" title>
+            <ti-widget-label label="Device Specific Parameters" text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible id="ti_widget_label_input_device" class="_TI_ group1hdr"></ti-widget-label>
+            <ti-widget-container font-size="inherit" font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible tooltip="Device variant selection from the mmWave sensing portfolio.  This field is used in error checking against device capabilities." id="ti_widget_container_sensor" class="_TI_ row1" title="Device variant selection from the mmWave sensing portfolio.  This field is used in error checking against device capabilities.">
+                <ti-widget-label label="mmWave Sensor" text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible id="ti_widget_label_sensor" class="_TI_ label1"></ti-widget-label>
+                <ti-widget-droplist selected-index="0" selected-value="xWR1243" selected-text="xWR1243" values="xWR1243|IWR1443|AWR1443|xWR1642" labels="xWR1243|IWR1443|AWR1443|xWR1642" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" text-align="left" visible tooltip="Device variant selection from the mmWave sensing portfolio.  This field is used in error checking against device capabilities." id="ti_widget_droplist_sensor" class="_TI_ value1 x-scope ti-widget-droplist-0" onchange="on_sensor()"></ti-widget-droplist>
+            </ti-widget-container>
+            <ti-widget-container font-size="inherit" font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible tooltip="Number of antennas used on the receiving side of the front-end.  Higher antenna count results in less available data memory per chirp, but provides additional angular information." id="ti_widget_container_num_rx" class="_TI_ row1" title="Number of antennas used on the receiving side of the front-end.  Higher antenna count results in less available data memory per chirp, but provides additional angular information.">
+                <ti-widget-label label="# of Rx Antennas" text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible id="ti_widget_label_num_rx" class="_TI_ label1"></ti-widget-label>
+                <ti-widget-droplist selected-index="0" selected-value="1" selected-text="item1" labels="item1|item2" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" text-align="left" visible tooltip="Number of antennas used on the receiving side of the front-end.  Higher antenna count results in less available data memory per chirp, but provides additional angular information." id="ti_widget_droplist_num_rx" class="_TI_ value1 x-scope ti-widget-droplist-0" onchange="on_num_rx()"></ti-widget-droplist>
+            </ti-widget-container>
+            <ti-widget-container font-size="inherit" font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible tooltip="Number of antennas used on the transmission side of the front-end.  Higher antenna count results in less available data memory per chirp, but provides additional angular information." id="ti_widget_container_num_tx" class="_TI_ row1" title="Number of antennas used on the transmission side of the front-end.  Higher antenna count results in less available data memory per chirp, but provides additional angular information.">
+                <ti-widget-label label="# of Tx Antennas" text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible id="ti_widget_label_num_tx" class="_TI_ label1"></ti-widget-label>
+                <ti-widget-droplist selected-index="0" selected-value="1" selected-text="item1" labels="item1|item2" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" text-align="left" visible tooltip="Number of antennas used on the transmission side of the front-end.  Higher antenna count results in less available data memory per chirp, but provides additional angular information." id="ti_widget_droplist_num_tx" class="_TI_ value1 x-scope ti-widget-droplist-0" onchange="on_num_tx()"></ti-widget-droplist>
+            </ti-widget-container>
+        </ti-widget-container>
+        <ti-widget-container font-size="inherit" font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible id="ti_widget_container_input_board" class="_TI_ group1" title>
+            <ti-widget-label label="Board Specific Parameters" text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible id="ti_widget_label_input_board" class="_TI_ group1hdr"></ti-widget-label>
+            <ti-widget-container font-size="inherit" font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible tooltip="Gain of the transmit antenna design.  8dB for TI mmWave sensor EVMs." id="ti_widget_container_tx_gain" class="_TI_ row1" title="Gain of the transmit antenna design.  8dB for TI mmWave sensor EVMs.">
+                <ti-widget-label label="Transmit Antenna Gain (dB)" text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible id="ti_widget_label_tx_gain" class="_TI_ label1"></ti-widget-label>
+                <ti-widget-textbox text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible tooltip="Gain of the transmit antenna design.  8dB for TI mmWave sensor EVMs." id="ti_widget_textbox_tx_gain" class="_TI_ value1 x-scope ti-widget-textbox-0" onchange="on_tx_gain()"></ti-widget-textbox>
+            </ti-widget-container>
+            <ti-widget-container font-size="inherit" font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible tooltip="Gain of the receive antenna design.  8dB for TI mmWave sensor EVMs." id="ti_widget_container_rx_gain" class="_TI_ row1" title="Gain of the receive antenna design.  8dB for TI mmWave sensor EVMs.">
+                <ti-widget-label label="Receive Antenna Gain (dB)" text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible id="ti_widget_label_rx_gain" class="_TI_ label1"></ti-widget-label>
+                <ti-widget-textbox text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible tooltip="Gain of the receive antenna design.  8dB for TI mmWave sensor EVMs." id="ti_widget_textbox_rx_gain" class="_TI_ value1 x-scope ti-widget-textbox-0" onchange="on_rx_gain()"></ti-widget-textbox>
+            </ti-widget-container>
+        </ti-widget-container>
+        <ti-widget-container font-size="inherit" font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible id="ti_widget_container_input_regulatory" class="_TI_ group1" title>
+            <ti-widget-label label="Regulatory Restrictions" text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible id="ti_widget_label_input_regulatory" class="_TI_ group1hdr"></ti-widget-label>
+            <ti-widget-container font-size="inherit" font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible tooltip="Selection of the supported frequency ranges the devices can operate in." id="ti_widget_container_frequency_range" class="_TI_ row1" title="Selection of the supported frequency ranges the devices can operate in.">
+                <ti-widget-label label="Frequency Range (GHz)" text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible id="ti_widget_label_frequency_range" class="_TI_ label1"></ti-widget-label>
+                <ti-widget-droplist selected-index="0" selected-value="76 - 77" selected-text="76 - 77" values="76 - 77|77 - 81" labels="76 - 77|77 - 81" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" text-align="left" visible tooltip="Selection of the supported frequency ranges the devices can operate in." id="ti_widget_droplist_frequency_range" class="_TI_ value1 x-scope ti-widget-droplist-0" onchange="on_frequency_range()"></ti-widget-droplist>
+            </ti-widget-container>
+            <ti-widget-container font-size="inherit" font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible tooltip='Maximum allowable chirp bandwidth for a single chirp.  Value must be less than or equal to the bandwidth permitted by the "Frequency Range".' id="ti_widget_container_maximum_bandwidth" class="_TI_ row1" title='Maximum allowable chirp bandwidth for a single chirp.  Value must be less than or equal to the bandwidth permitted by the "Frequency Range".'>
+                <ti-widget-label label="Maximum Bandwidth (MHz)" text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible id="ti_widget_label_maximum_bandwidth" class="_TI_ label1"></ti-widget-label>
+                <ti-widget-textbox text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible tooltip='Maximum allowable chirp bandwidth for a single chirp.  Value must be less than or equal to the bandwidth permitted by the "Frequency Range".' id="ti_widget_textbox_maximum_bandwidth" class="_TI_ value1 x-scope ti-widget-textbox-0" onchange="on_maximum_bandwidth()"></ti-widget-textbox>
+            </ti-widget-container>
+            <ti-widget-container font-size="inherit" font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible tooltip="Maximum transmit device power allowed by the regulations." id="ti_widget_container_tx_power" class="_TI_ row1" title="Maximum transmit device power allowed by the regulations.">
+                <ti-widget-label label="Transmit Power (dBm)" text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible id="ti_widget_label_tx_power" class="_TI_ label1"></ti-widget-label>
+                <ti-widget-textbox text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible tooltip="Maximum transmit device power allowed by the regulations." id="ti_widget_textbox_tx_power" class="_TI_ value1 x-scope ti-widget-textbox-0" onchange="on_tx_power()"></ti-widget-textbox>
+            </ti-widget-container>
+        </ti-widget-container>
+        <ti-widget-container font-size="inherit" font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible id="ti_widget_container_input_scene" class="_TI_ group1" title>
+            <ti-widget-label label="Scene Parameters" text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible id="ti_widget_label_input_scene" class="_TI_ group1hdr"></ti-widget-label>
+            <ti-widget-container font-size="inherit" font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible tooltip="Typical ambient temperature where the sensor will be deployed." id="ti_widget_container_ambient_temperature" class="_TI_ row1" title="Typical ambient temperature where the sensor will be deployed.">
+                <ti-widget-label label="Ambient Temperature (deg Celcius)" text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible id="ti_widget_label_ambient_temperature" class="_TI_ label1"></ti-widget-label>
+                <ti-widget-textbox text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible tooltip="Typical ambient temperature where the sensor will be deployed." id="ti_widget_textbox_ambient_temperature" class="_TI_ value1 x-scope ti-widget-textbox-0" onchange="on_ambient_temperature()"></ti-widget-textbox>
+            </ti-widget-container>
+            <ti-widget-container font-size="inherit" font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible tooltip="Maximum range where objects are still detectable by the chirp design.  Maximum range increase memory requirements and must be balanced against other Scene Parameters." id="ti_widget_container_maximum_detectable_range" class="_TI_ row1" title="Maximum range where objects are still detectable by the chirp design.  Maximum range increase memory requirements and must be balanced against other Scene Parameters.">
+                <ti-widget-label label="Maximum Detectable Range (m)" text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible id="ti_widget_label_maximum_detectable_range" class="_TI_ label1"></ti-widget-label>
+                <ti-widget-textbox text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible tooltip="Maximum range where objects are still detectable by the chirp design.  Maximum range increase memory requirements and must be balanced against other Scene Parameters." id="ti_widget_textbox_maximum_detectable_range" class="_TI_ value1 x-scope ti-widget-textbox-0" onchange="on_maximum_detectable_range()"></ti-widget-textbox>
+            </ti-widget-container>
+            <ti-widget-container font-size="inherit" font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible tooltip='Smallest distance two objects must be separate in the radial direction to appear as two objects. Smaller range resolution will increase memory requirements and the "Total Sweep Bandwidth".' id="ti_widget_container_range_resolution" class="_TI_ row1" title='Smallest distance two objects must be separate in the radial direction to appear as two objects. Smaller range resolution will increase memory requirements and the "Total Sweep Bandwidth".'>
+                <ti-widget-label label="Range Resolution (cm)" text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible id="ti_widget_label_range_resolution" class="_TI_ label1"></ti-widget-label>
+                <ti-widget-textbox text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible tooltip='Smallest distance two objects must be separate in the radial direction to appear as two objects. Smaller range resolution will increase memory requirements and the "Total Sweep Bandwidth".' id="ti_widget_textbox_range_resolution" class="_TI_ value1 x-scope ti-widget-textbox-0" onchange="on_range_resolution()"></ti-widget-textbox>
+            </ti-widget-container>
+            <ti-widget-container font-size="inherit" font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible tooltip='Maximum detectable velocity of objects in the scene.  Larger maximum velocity will impact chirp "Ramp Slope".' id="ti_widget_container_maximum_velocity" class="_TI_ row1" title='Maximum detectable velocity of objects in the scene.  Larger maximum velocity will impact chirp "Ramp Slope".'>
+                <ti-widget-label label="Maximum Velocity (km/h)" text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible id="ti_widget_label_maximum_velocity" class="_TI_ label1"></ti-widget-label>
+                <ti-widget-textbox text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible tooltip='Maximum detectable velocity of objects in the scene.  Larger maximum velocity will impact chirp "Ramp Slope".' id="ti_widget_textbox_maximum_velocity" class="_TI_ value1 x-scope ti-widget-textbox-0" onchange="on_maximum_velocity()"></ti-widget-textbox>
+            </ti-widget-container>
+            <ti-widget-container font-size="inherit" font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible tooltip='Smallest difference in velocity of two objects to detect both objects individually with velocity only. Smaller velocity resolution will impact "Min # of Chirp Loops" and reduce maximum "Measurement Rate".' id="ti_widget_container_velocity_resolution" class="_TI_ row1" title='Smallest difference in velocity of two objects to detect both objects individually with velocity only. Smaller velocity resolution will impact "Min # of Chirp Loops" and reduce maximum "Measurement Rate".'>
+                <ti-widget-label label="Velocity Resolution (km/h)" text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible id="ti_widget_label_velocity_resolution" class="_TI_ label1"></ti-widget-label>
+                <ti-widget-textbox text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible tooltip='Smallest difference in velocity of two objects to detect both objects individually with velocity only. Smaller velocity resolution will impact "Min # of Chirp Loops" and reduce maximum "Measurement Rate".' id="ti_widget_textbox_velocity_resolution" class="_TI_ value1 x-scope ti-widget-textbox-0" onchange="on_velocity_resolution()"></ti-widget-textbox>
+            </ti-widget-container>
+            <ti-widget-container font-size="inherit" font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible tooltip='Desired rate of measurement.  Measurement rate is limited by "Chirp Time" and "Active Frame Time".' id="ti_widget_container_measurement_rate" class="_TI_ row1" title='Desired rate of measurement.  Measurement rate is limited by "Chirp Time" and "Active Frame Time".'>
+                <ti-widget-label label="Measurement Rate (Hz)" text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible id="ti_widget_label_measurement_rate" class="_TI_ label1"></ti-widget-label>
+                <ti-widget-textbox text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible tooltip='Desired rate of measurement.  Measurement rate is limited by "Chirp Time" and "Active Frame Time".' id="ti_widget_textbox_measurement_rate" class="_TI_ value1 x-scope ti-widget-textbox-0" onchange="on_measurement_rate()"></ti-widget-textbox>
+            </ti-widget-container>
+            <ti-widget-container font-size="inherit" font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible tooltip='Radar cross section of a typical detectable object in the scene.  This value is used in calculating range of detection for this type of object within the "Maximum Detectable Range".  Default values are provided for typical objects in a scene.' id="ti_widget_container_typical_detected_object" class="_TI_ row1" title='Radar cross section of a typical detectable object in the scene.  This value is used in calculating range of detection for this type of object within the "Maximum Detectable Range".  Default values are provided for typical objects in a scene.'>
+                <ti-widget-label label="Typical Detectable Object (m^2)" text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible id="ti_widget_label_typical_detected_object" class="_TI_ label1"></ti-widget-label>
+                <ti-widget-droplist selected-index="2" selected-value="Motorcycle" selected-text="Motorcycle" values="Truck|Car|Motorcycle|Adult|Child|Custom" labels="Truck|Car|Motorcycle|Adult|Child|Custom" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" text-align="left" visible tooltip='Radar cross section of a typical detectable object in the scene.  This value is used in calculating range of detection for this type of object within the "Maximum Detectable Range".  Default values are provided for typical objects in a scene.' id="ti_widget_droplist_typical_detected_object" class="_TI_ value1 x-scope ti-widget-droplist-0" onchange="on_typical_detected_object_choice()"></ti-widget-droplist>
+                <ti-widget-textbox text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible tooltip='Radar cross section of a typical detectable object in the scene.  This value is used in calculating range of detection for this type of object within the "Maximum Detectable Range".  Default values are provided for typical objects in a scene.' id="ti_widget_textbox_typical_detected_object" class="_TI_ value1 x-scope ti-widget-textbox-0" onchange="on_typical_detected_object()"></ti-widget-textbox>
+            </ti-widget-container>
+        </ti-widget-container>
+        <ti-widget-container font-size="inherit" font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible id="ti_widget_container_input_additional" class="_TI_ group1" title>
+            <ti-widget-label label="Additional Parameters" text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible id="ti_widget_label_input_additional" class="_TI_ group1hdr"></ti-widget-label>
+            <ti-widget-container font-size="inherit" font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible tooltip="Signal loss of the reflection signal from the object being detected.  Typically on the order of 1-3 dB." id="ti_widget_container_detection_loss" class="_TI_ row1" title="Signal loss of the reflection signal from the object being detected.  Typically on the order of 1-3 dB.">
+                <ti-widget-label label="Detection Loss (dB)" text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible id="ti_widget_label_detection_loss" class="_TI_ label1"></ti-widget-label>
+                <ti-widget-textbox text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible tooltip="Signal loss of the reflection signal from the object being detected.  Typically on the order of 1-3 dB." id="ti_widget_textbox_detection_loss" class="_TI_ value1 x-scope ti-widget-textbox-0" onchange="on_detection_loss()"></ti-widget-textbox>
+            </ti-widget-container>
+            <ti-widget-container font-size="inherit" font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible tooltip="Signal loss due to mechanical design around the sensor.  Things like protective plastic, radome, and other protective can attribute signal loss.  Typically on the order of 1-2 dB." id="ti_widget_container_system_loss" class="_TI_ row1" title="Signal loss due to mechanical design around the sensor.  Things like protective plastic, radome, and other protective can attribute signal loss.  Typically on the order of 1-2 dB.">
+                <ti-widget-label label="System Loss (dB)" text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible id="ti_widget_label_system_loss" class="_TI_ label1"></ti-widget-label>
+                <ti-widget-textbox text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible tooltip="Signal loss due to mechanical design around the sensor.  Things like protective plastic, radome, and other protective can attribute signal loss.  Typically on the order of 1-2 dB." id="ti_widget_textbox_system_loss" class="_TI_ value1 x-scope ti-widget-textbox-0" onchange="on_system_loss()"></ti-widget-textbox>
+            </ti-widget-container>
+            <ti-widget-container font-size="inherit" font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible tooltip="Margin allocated for other system limitation that may be in the design." id="ti_widget_container_implementation_margin" class="_TI_ row1" title="Margin allocated for other system limitation that may be in the design.">
+                <ti-widget-label label="Implementation Margin (dB)" text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible id="ti_widget_label_implementation_margin" class="_TI_ label1"></ti-widget-label>
+                <ti-widget-textbox text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible tooltip="Margin allocated for other system limitation that may be in the design." id="ti_widget_textbox_implementation_margin" class="_TI_ value1 x-scope ti-widget-textbox-0" onchange="on_implementation_margin()"></ti-widget-textbox>
+            </ti-widget-container>
+            <ti-widget-container font-size="inherit" font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible tooltip="Minimum signal-to-noise ratio to detect object as valid reflection vs noise in the scene.  Typically on the order of 12-16 dB." id="ti_widget_container_detection_SNR" class="_TI_ row1" title="Minimum signal-to-noise ratio to detect object as valid reflection vs noise in the scene.  Typically on the order of 12-16 dB.">
+                <ti-widget-label label="Detection SNR (dB)" text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible id="ti_widget_label_detection_SNR" class="_TI_ label1"></ti-widget-label>
+                <ti-widget-textbox text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible tooltip="Minimum signal-to-noise ratio to detect object as valid reflection vs noise in the scene.  Typically on the order of 12-16 dB." id="ti_widget_textbox_detection_SNR" class="_TI_ value1 x-scope ti-widget-textbox-0" onchange="on_detection_SNR()"></ti-widget-textbox>
+            </ti-widget-container>
+        </ti-widget-container>
+        <ti-widget-button label="Save Config" bindable-trigger="0" button-type="default" raised elevation="1" animated class="_TI_ x-scope ti-widget-button-0" onclick="onSaveCfg()" id="ti_widget_button_save_config"></ti-widget-button>
+        <ti-widget-button label="Load Config" bindable-trigger="0" button-type="default" raised class="_TI_ x-scope ti-widget-button-0" onclick="onLoadCfg()" elevation="1" animated id="ti_widget_button_load_cfg"></ti-widget-button>
+        <ti-widget-button label="Reset Config" bindable-trigger="0" button-type="default" raised class="_TI_ x-scope ti-widget-button-0" onclick="onDefaultCfg()" elevation="1" animated id="ti_widget_button_reset_cfg"></ti-widget-button>
+    </ti-widget-container>
+    <ti-widget-container font-size="inherit" auto-scroll font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible id="ti_widget_container_output" class="_TI_" title>
+        <ti-widget-label label="Outputs and Chirp Design" text-align="left" font-size="large" font-style="normal" font-weight="normal" text-decoration="none" visible id="ti_widget_label_output" class="_TI_ group0hdr"></ti-widget-label>
+        <ti-widget-container font-size="inherit" font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible id="ti_widget_container_output_det_obj" class="_TI_ group2" title>
+            <ti-widget-label label="Detectable Object Range" text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible id="ti_widget_label_output_det_obj" class="_TI_ group1hdr"></ti-widget-label>
+            <div class="_TI_ dummygroup1" id="div2">
+                <ti-widget-container font-size="inherit" font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible tooltip='Maximum range where the "Typical Detectable Object" will still be detected.' id="ti_widget_container_max_range_for_det_obj" class="_TI_ row1" title='Maximum range where the "Typical Detectable Object" will still be detected.'>
+                    <ti-widget-label label="Max Range for Typical Detectable Object (m)" text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible id="ti_widget_label_max_range_for_det_obj" class="_TI_ label1"></ti-widget-label>
+                    <ti-widget-textbox text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible disabled tooltip='Maximum range where the "Typical Detectable Object" will still be detected.' id="ti_widget_textbox_max_range_for_det_obj" class="_TI_ value2 x-scope ti-widget-textbox-0"></ti-widget-textbox>
+                </ti-widget-container>
+            </div>
+            <div class="_TI_ dummygroup2" id="div1">
+                <ti-widget-container font-size="inherit" font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible tooltip='Minimum radar cross section (object size and reflectivity to RF) that can be detected at the "Maximum Detectable Range".' id="ti_widget_container_min_rcs_at_max_range" class="_TI_ row1" title='Minimum radar cross section (object size and reflectivity to RF) that can be detected at the "Maximum Detectable Range".'>
+                    <ti-widget-label label="Min RCS Detectable at Max Range (m^2)" text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible id="ti_widget_label_min_rcs_at_max_range" class="_TI_ label1"></ti-widget-label>
+                    <ti-widget-textbox text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible disabled tooltip='Minimum radar cross section (object size and reflectivity to RF) that can be detected at the "Maximum Detectable Range".' id="ti_widget_textbox_min_rcs_at_max_range" class="_TI_ value2 x-scope ti-widget-textbox-0"></ti-widget-textbox>
+                </ti-widget-container>
+            </div>
+        </ti-widget-container>
+        <ti-widget-container font-size="inherit" font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible id="ti_widget_container_output_chirp_design" class="_TI_ group2" title>
+            <ti-widget-label label="Chirp Configuration Parameters" text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible id="ti_widget_label_output_chirp_design" class="_TI_ group1hdr"></ti-widget-label>
+            <div class="_TI_ dummygroup1">
+                <ti-widget-container font-size="inherit" font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible tooltip="Starting frequency of the chirp ramp." id="ti_widget_container_start_frequency" class="_TI_ row1" title="Starting frequency of the chirp ramp.">
+                    <ti-widget-label label="Frequency Start (GHz)" text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible id="ti_widget_label_start_frequency" class="_TI_ label1"></ti-widget-label>
+                    <ti-widget-textbox text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible disabled tooltip="Starting frequency of the chirp ramp." id="ti_widget_textbox_start_frequency" class="_TI_ value2 x-scope ti-widget-textbox-0"></ti-widget-textbox>
+                </ti-widget-container>
+                <ti-widget-container font-size="inherit" font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible tooltip="Slope of the chirp as it ramps frequency.  Frequency Slope must be equal to or less than 100 MHz/us." id="ti_widget_container_ramp_slope" class="_TI_ row1" title="Slope of the chirp as it ramps frequency.  Frequency Slope must be equal to or less than 100 MHz/us.">
+                    <ti-widget-label label="Frequency Slope (MHz/us)" text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible id="ti_widget_label_ramp_slope" class="_TI_ label1"></ti-widget-label>
+                    <ti-widget-textbox text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible disabled tooltip="Slope of the chirp as it ramps frequency.  Frequency Slope must be equal to or less than 100 MHz/us." id="ti_widget_textbox_ramp_slope" class="_TI_ value2 x-scope ti-widget-textbox-0"></ti-widget-textbox>
+                </ti-widget-container>
+                <ti-widget-container font-size="inherit" font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible tooltip="Register-level parameter to represent the Frequency Slope." id="ti_widget_container_ramp_slope_parameter" class="_TI_ row1" title="Register-level parameter to represent the Frequency Slope.">
+                    <ti-widget-label label="Frequency Slope Constant" text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible id="ti_widget_label_ramp_slope_parameter" class="_TI_ label1"></ti-widget-label>
+                    <ti-widget-textbox text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible disabled tooltip="Register-level parameter to represent the Frequency Slope." id="ti_widget_textbox_ramp_slope_parameter" class="_TI_ value2 x-scope ti-widget-textbox-0"></ti-widget-textbox>
+                </ti-widget-container>
+                <ti-widget-container font-size="inherit" font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible tooltip="ADC sampling frequency of the I/F signal.  The frequency is limited by device variants within each family.  Reference is provided in the datasheet for each device." id="ti_widget_container_sampling_frequency" class="_TI_ row1" title="ADC sampling frequency of the I/F signal.  The frequency is limited by device variants within each family.  Reference is provided in the datasheet for each device.">
+                    <ti-widget-label label="Sampling Rate (ksps)" text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible id="ti_widget_label_sampling_frequency" class="_TI_ label1"></ti-widget-label>
+                    <ti-widget-textbox text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible disabled tooltip="ADC sampling frequency of the I/F signal.  The frequency is limited by device variants within each family.  Reference is provided in the datasheet for each device." id="ti_widget_textbox_sampling_frequency" class="_TI_ value2 x-scope ti-widget-textbox-0"></ti-widget-textbox>
+                </ti-widget-container>
+                <ti-widget-container font-size="inherit" font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible tooltip="Number of ADC samples per chirp." id="ti_widget_container_num_samples_per_chirp" class="_TI_ row1" title="Number of ADC samples per chirp.">
+                    <ti-widget-label label="# of Samples per Chirp" text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible id="ti_widget_label_num_samples_per_chirp" class="_TI_ label1"></ti-widget-label>
+                    <ti-widget-textbox text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible disabled tooltip="Number of ADC samples per chirp." id="ti_widget_textbox_num_samples_per_chirp" class="_TI_ value2 x-scope ti-widget-textbox-0"></ti-widget-textbox>
+                </ti-widget-container>
+            </div>
+            <div class="_TI_ dummygroup2" id="div">
+                <ti-widget-container font-size="inherit" font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible tooltip="Minimum number of chirps per frame to meet scene requirements." id="ti_widget_container_min_num_chirp_loops" class="_TI_ row1" title="Minimum number of chirps per frame to meet scene requirements.">
+                    <ti-widget-label label="# of Chirp Loops" text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible id="ti_widget_label_min_num_chirp_loops" class="_TI_ label1"></ti-widget-label>
+                    <ti-widget-textbox text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible disabled tooltip="Minimum number of chirps per frame to meet scene requirements." id="ti_widget_textbox_min_num_chirp_loops" class="_TI_ value2 x-scope ti-widget-textbox-0"></ti-widget-textbox>
+                </ti-widget-container>
+                <ti-widget-container font-size="inherit" font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible tooltip="Total time from start of one frame to the start of the next frame." id="ti_widget_container_periodicity" class="_TI_ row1" title="Total time from start of one frame to the start of the next frame.">
+                    <ti-widget-label label="Frame Periodicity (ms)" text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible id="ti_widget_label_periodicity" class="_TI_ label1"></ti-widget-label>
+                    <ti-widget-textbox text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible disabled tooltip="Total time from start of one frame to the start of the next frame." id="ti_widget_textbox_periodicity" class="_TI_ value2 x-scope ti-widget-textbox-0"></ti-widget-textbox>
+                </ti-widget-container>
+                <ti-widget-container font-size="inherit" font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible tooltip="Minimum idle time required between chirps." id="ti_widget_container_idle_time_minimum" class="_TI_ row1" title="Minimum idle time required between chirps.">
+                    <ti-widget-label label="Idle Time (us)" text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible id="ti_widget_label_idle_time_minimum" class="_TI_ label1"></ti-widget-label>
+                    <ti-widget-textbox text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible disabled tooltip="Minimum idle time required between chirps." id="ti_widget_textbox_idle_time_minimum" class="_TI_ value2 x-scope ti-widget-textbox-0"></ti-widget-textbox>
+                </ti-widget-container>
+                <ti-widget-container font-size="inherit" font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible tooltip="Time from the start of the ADC sampling until valid samples are available.  Impacts set up time of the chirp." id="ti_widget_container_adc_valid_start_time" class="_TI_ row1" title="Time from the start of the ADC sampling until valid samples are available.  Impacts set up time of the chirp.">
+                    <ti-widget-label label="ADC Valid Start Time (us)" text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible id="ti_widget_label_adc_valid_start_time" class="_TI_ label1"></ti-widget-label>
+                    <ti-widget-textbox text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible disabled tooltip="Time from the start of the ADC sampling until valid samples are available.  Impacts set up time of the chirp." id="ti_widget_textbox_adc_valid_start_time" class="_TI_ value2 x-scope ti-widget-textbox-0"></ti-widget-textbox>
+                </ti-widget-container>
+                <ti-widget-container font-size="inherit" font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible tooltip='Ending time of each ramp from start at 0 - equivalent to total chirp time that includes "Chirp Time" and set up time.' id="ti_widget_container_ramp_end_time" class="_TI_ row1" title='Ending time of each ramp from start at 0 - equivalent to total chirp time that includes "Chirp Time" and set up time.'>
+                    <ti-widget-label label="Ramp End Time" text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible id="ti_widget_label_ramp_end_time" class="_TI_ label1"></ti-widget-label>
+                    <ti-widget-textbox text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible disabled tooltip='Ending time of each ramp from start at 0 - equivalent to total chirp time that includes "Chirp Time" and set up time.' id="ti_widget_textbox_ramp_end_time" class="_TI_ value2 x-scope ti-widget-textbox-0"></ti-widget-textbox>
+                </ti-widget-container>
+            </div>
+        </ti-widget-container>
+        <ti-widget-container font-size="inherit" font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible id="ti_widget_container1" class="_TI_ group2" title>
+            <ti-widget-label label="Information Only Parameters" text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible id="ti_widget_label1" class="_TI_ group1hdr"></ti-widget-label>
+            <div class="_TI_ dummygroup1">
+                <ti-widget-container font-size="inherit" font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible tooltip="Total chirp bandwidth including ADC start up and ramp down." id="ti_widget_container_total_sweep_bandwidth" class="_TI_ row1" title="Total chirp bandwidth including ADC start up and ramp down.">
+                    <ti-widget-label label="Bandwidth (MHz)" text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible id="ti_widget_label_total_sweep_bandwidth" class="_TI_ label1"></ti-widget-label>
+                    <ti-widget-textbox text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible disabled tooltip="Total chirp bandwidth including ADC start up and ramp down." id="ti_widget_textbox_total_sweep_bandwidth" class="_TI_ value2 x-scope ti-widget-textbox-0"></ti-widget-textbox>
+                </ti-widget-container>
+                <ti-widget-container font-size="inherit" font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible id="ti_widget_container_maximum_beat_frequency" class="_TI_ row1" title>
+                    <ti-widget-label label="Beat Frequency (MHz)" text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible tooltip="Beat frequency is the difference between the original ramp signal and the echo reflection from the detected object." id="ti_widget_label_maximum_beat_frequency" class="_TI_ label1"></ti-widget-label>
+                    <ti-widget-textbox text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible disabled id="ti_widget_textbox_maximum_beat_frequency" class="_TI_ value2 x-scope ti-widget-textbox-0"></ti-widget-textbox>
+                </ti-widget-container>
+                <ti-widget-container font-size="inherit" font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible tooltip="Total duration of a single continuous chirp." id="ti_widget_container_chirp_time" class="_TI_ row1" title="Total duration of a single continuous chirp.">
+                    <ti-widget-label label="Chirp Cycle Time (us)" text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible id="ti_widget_label_chirp_time" class="_TI_ label1"></ti-widget-label>
+                    <ti-widget-textbox text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible disabled tooltip="Total duration of a single continuous chirp." id="ti_widget_textbox_chirp_time" class="_TI_ value2 x-scope ti-widget-textbox-0"></ti-widget-textbox>
+                </ti-widget-container>
+                <ti-widget-container font-size="inherit" font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible tooltip="Period of how often the chirps are repeated in a frame." id="ti_widget_container_chirp_repetition_period" class="_TI_ row1" title="Period of how often the chirps are repeated in a frame.">
+                    <ti-widget-label label="Chirp Repetition Period (us)" text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible id="ti_widget_label_chirp_repetition_period" class="_TI_ label1"></ti-widget-label>
+                    <ti-widget-textbox text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible disabled tooltip="Period of how often the chirps are repeated in a frame." id="ti_widget_textbox_chirp_repetition_period" class="_TI_ value2 x-scope ti-widget-textbox-0"></ti-widget-textbox>
+                </ti-widget-container>
+                <ti-widget-container font-size="inherit" font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible tooltip='Total frame time required for the "Maximum Velocity" and "Velocity Resolution".' id="ti_widget_container_active_frame_time" class="_TI_ row1" title='Total frame time required for the "Maximum Velocity" and "Velocity Resolution".'>
+                    <ti-widget-label label="Active Frame Time (ms)" text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible id="ti_widget_label_active_frame_time" class="_TI_ label1"></ti-widget-label>
+                    <ti-widget-textbox text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible disabled tooltip='Total frame time required for the "Maximum Velocity" and "Velocity Resolution".' id="ti_widget_textbox_active_frame_time" class="_TI_ value2 x-scope ti-widget-textbox-0"></ti-widget-textbox>
+                </ti-widget-container>
+            </div>
+            <div class="_TI_ dummygroup2">
+                <ti-widget-container font-size="inherit" font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible tooltip='Number of FFT bins required for the "Maximum Detectable Range" and "Range Resolution".  Must be a power of 2.' id="ti_widget_container_num_range_fft_bins" class="_TI_ row1" title='Number of FFT bins required for the "Maximum Detectable Range" and "Range Resolution".  Must be a power of 2.'>
+                    <ti-widget-label label="# of Range FFT Bins" text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible id="ti_widget_label_num_range_fft_bins" class="_TI_ label1"></ti-widget-label>
+                    <ti-widget-textbox text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible disabled tooltip='Number of FFT bins required for the "Maximum Detectable Range" and "Range Resolution".  Must be a power of 2.' id="ti_widget_textbox_num_range_fft_bins" class="_TI_ value2 x-scope ti-widget-textbox-0"></ti-widget-textbox>
+                </ti-widget-container>
+                <ti-widget-container font-size="inherit" font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible tooltip='Number of FFT bins required for the "Maximum Velocity" and "Velocity Resolution".  Must be a power of 2.' id="ti_widget_container_num_doppler_fft_bins" class="_TI_ row1" title='Number of FFT bins required for the "Maximum Velocity" and "Velocity Resolution".  Must be a power of 2.'>
+                    <ti-widget-label label="# of Doppler FFT Bins" text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible id="ti_widget_label_num_doppler_fft_bins" class="_TI_ label1"></ti-widget-label>
+                    <ti-widget-textbox text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible disabled tooltip='Number of FFT bins required for the "Maximum Velocity" and "Velocity Resolution".  Must be a power of 2.' id="ti_widget_textbox_num_doppler_fft_bins" class="_TI_ value2 x-scope ti-widget-textbox-0"></ti-widget-textbox>
+                </ti-widget-container>
+                <ti-widget-container font-size="inherit" font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible tooltip='Actual range resolution based on the "# of Range FFT Bins".  This value may be better than original "Range Resolution" due to increased FFT size to meet power of 2 requirement.' id="ti_widget_container_range_inter_bin_resolution" class="_TI_ row1" title='Actual range resolution based on the "# of Range FFT Bins".  This value may be better than original "Range Resolution" due to increased FFT size to meet power of 2 requirement.'>
+                    <ti-widget-label label="Range Interbin Resolution (cm)" text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible id="ti_widget_label_range_inter_bin_resolution" class="_TI_ label1"></ti-widget-label>
+                    <ti-widget-textbox text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible disabled tooltip='Actual range resolution based on the "# of Range FFT Bins".  This value may be better than original "Range Resolution" due to increased FFT size to meet power of 2 requirement.' id="ti_widget_textbox_range_inter_bin_resolution" class="_TI_ value2 x-scope ti-widget-textbox-0"></ti-widget-textbox>
+                </ti-widget-container>
+                <ti-widget-container font-size="inherit" font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible tooltip='Actual velocity resolution based on the "# of Doppler FFT Bins".  This value may be better than original "Velocity Resolution" due to increased FFT size to meet power of 2 requirement.' id="ti_widget_container_velocity_inter_bin_resolution" class="_TI_ row1" title='Actual velocity resolution based on the "# of Doppler FFT Bins".  This value may be better than original "Velocity Resolution" due to increased FFT size to meet power of 2 requirement.'>
+                    <ti-widget-label label="Velocity Interbin Resolution (m/s)" text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible id="ti_widget_label_velocity_inter_bin_resolution" class="_TI_ label1"></ti-widget-label>
+                    <ti-widget-textbox text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible disabled tooltip='Actual velocity resolution based on the "# of Doppler FFT Bins".  This value may be better than original "Velocity Resolution" due to increased FFT size to meet power of 2 requirement.' id="ti_widget_textbox_velocity_inter_bin_resolution" class="_TI_ value2 x-scope ti-widget-textbox-0"></ti-widget-textbox>
+                </ti-widget-container>
+                <ti-widget-container font-size="inherit" font-style="normal" font-weight="normal" text-align="left" text-decoration="none" visible tooltip='Memory required for the radar data storage. Each device has different memory limitations.  To analyze front-end only, please select xR1243 in the "mmWave Sensor".' id="ti_widget_container_radar_cube_size" class="_TI_ row1" title='Memory required for the radar data storage. Each device has different memory limitations.  To analyze front-end only, please select xR1243 in the "mmWave Sensor".'>
+                    <ti-widget-label label="Radar Cube Size (KB)" text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible id="ti_widget_label_radar_cube_size" class="_TI_ label1"></ti-widget-label>
+                    <ti-widget-textbox text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible disabled tooltip='Memory required for the radar data storage. Each device has different memory limitations.  To analyze front-end only, please select xR1243 in the "mmWave Sensor".' id="ti_widget_textbox_radar_cube_size" class="_TI_ value2 x-scope ti-widget-textbox-0"></ti-widget-textbox>
+                </ti-widget-container>
+            </div>
+        </ti-widget-container>
+        <ti-widget-image image-path="chirp_diagram.png" hover-effect="no" visible id="ti_widget_image" lockaspectratio class="_TI_"></ti-widget-image>
+    </ti-widget-container>
+    <textarea id="ti_widget_textbox_cfg_console" readonly text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible class="_TI_"></textarea>
+</ti-widget-container>
+
+<ti-widget-statusbar icon-name="ti-core-icons:nolink" id="ti_widget_statusbar" class="_TI_"></ti-widget-statusbar>
+<input type="file" id="myFileLoadDialog" class="_TI_">
+
+<paper-dialog modal id="dialog_help_about" class="_TI_ x-scope paper-dialog-0">
+    <ti-widget-label label="About mmWave Sensing Estimator" text-align="left" font-size="large" font-style="normal" font-weight="normal" text-decoration="none" visible id="label_help_about" class="_TI_"></ti-widget-label>
+    <ti-widget-label label="Version 1.0" text-align="left" font-size="inherit" font-style="normal" font-weight="normal" text-decoration="none" visible class="_TI_ helplabel1"></ti-widget-label>
+    <div class="buttons _TI_">
+        <paper-button elevation="0" animated autofocus dialog-confirm class="_TI_ x-scope paper-button-0">Close</paper-button>
+    </div>
+</paper-dialog>
+
+</template>
+ 
+<!-- ------------------------------------------------------------------------------------- -->
+
+<script>
+	// Do not edit this file - it is automatically generated.  Please edit index.js
+	addEventListener('WebComponentsReady', function () {
+		// remove splash
+        var splash = document.querySelector("#splash")
+        if (splash) {
+			splash.parentNode.removeChild(splash);
+        }
+	});
+</script>
+</body>
+</html>

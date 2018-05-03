@@ -1,0 +1,9 @@
+{
+    "template": "Application",
+    "description": "mmWave Sensing Estimator",
+    "version": "1.0.8",
+    "tiBrandingEnabled": true,
+    "applicationName": "mmWaveSensingEstimator",
+    "projectName": "mmWaveSensingEstimator",
+    "disableAutoConnect": false
+}

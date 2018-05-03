@@ -1,0 +1,47 @@
+html .ti-theme ti-widget-menuseparator #menuSeparator {
+  background-color: #888 !important;
+}
+html .ti-theme ti-widget-menubar {
+  background-color: #cc0000 !important;
+  color: #fff !important;
+}
+html .ti-theme ti-widget-menubar .logoImage {
+  background-color: #cc0000 !important;
+  color: #fff !important;
+}
+html .ti-theme ti-widget-menuitem .navIcon {
+  color: #000 !important;
+}
+html .ti-theme ti-widget-menuitem .hoverMenu {
+  background-color: #f7f7f7 !important;
+  color: #000 !important;
+  border-color: #f7f7f7 !important;
+}
+html .ti-theme ti-widget-menuitem .hovering {
+  background-color: #f7f7f7 !important;
+  color: #000 !important;
+  border-color: #f7f7f7 !important;
+}
+html .ti-theme ti-widget-menuaction li {
+  color: #000 !important;
+  background-color: #f7f7f7 !important;
+  border-color: #f7f7f7 !important;
+}
+html .ti-theme ti-widget-menuaction ul {
+  box-shadow: 3px 3px 3px #98999b !important;
+    
+}
+html .ti-theme ti-widget-menuitem.subMenuItem .hovering,
+html .ti-theme ti-widget-menuaction li:hover {
+  background-color: rgba(0, 0, 0, 0.1) !important;
+  color: #000 !important;
+}
+html .ti-theme ti-widget-menuaction .unenabled {
+  color: #888 !important;
+  background-color: transparent !important;
+  border-color: #f7f7f7 !important;
+}
+html .ti-theme ti-widget-menuaction .unenabled:hover {
+  color: #888 !important;
+  background-color: #f7f7f7 !important;
+}

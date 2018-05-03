@@ -1,0 +1,21 @@
+{
+    "platform": "xWR1642",
+    "num_rx": 4,
+    "num_tx": 1,
+    "tx_gain": 9,
+    "rx_gain": 9,
+    "frequency_range": "76 - 77",
+    "maximum_bandwidth": 1000,
+    "tx_power": 12,
+    "ambient_temperature_degC": 20,
+    "maximum_detectable_range": 70,
+    "range_resolution": 45,
+    "maximum_velocity_kmph": 65,
+    "velocity_resolution_kmph": 2,
+    "measurement_rate": 25,
+    "typical_detected_object": "Car",
+    "detection_loss": 1,
+    "system_loss": 1,
+    "implementation_margin": 2,
+    "detection_SNR": 12
+}

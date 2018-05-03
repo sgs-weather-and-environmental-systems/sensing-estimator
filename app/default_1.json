@@ -1,0 +1,21 @@
+{
+    "platform": "IWR1443",
+    "num_rx": 4,
+    "num_tx": 2,
+    "tx_gain": 9,
+    "rx_gain": 9,
+    "frequency_range": "77 - 81",
+    "maximum_bandwidth": 4000,
+    "tx_power": 12,
+    "ambient_temperature_degC": 20,
+    "maximum_detectable_range": 10,
+    "range_resolution": 5,
+    "maximum_velocity_kmph": 26,
+    "velocity_resolution_kmph": 2,
+    "measurement_rate": 10,
+    "typical_detected_object": "Adult",
+    "detection_loss": 1,
+    "system_loss": 1,
+    "implementation_margin": 2,
+    "detection_SNR": 12
+}
